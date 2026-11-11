@@ -19,6 +19,7 @@ interface CharacterStudioWorkspaceProps {
   onAddCharacter: (char: CharacterProfileItem) => void;
   onDeleteCharacter: (charId: string) => void;
   onToggleProjectCharacter: (charId: string) => void;
+  onSyncCharactersToAllScenes?: () => void;
 }
 
 export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> = ({
@@ -27,10 +28,15 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
   onAddCharacter,
   onDeleteCharacter,
   onToggleProjectCharacter,
+  onSyncCharactersToAllScenes,
 }) => {
   const [name, setName] = useState('');
+  const [age, setAge] = useState('25 years old');
   const [role, setRole] = useState('Lead Vocalist / Protagonist');
   const [appearancePrompt, setAppearancePrompt] = useState('');
+  const [facialExpression, setFacialExpression] = useState(
+    'Expressive, introspective cinematic gaze'
+  );
   const [wardrobeLock, setWardrobeLock] = useState('');
   const [hairstyleLock, setHairstyleLock] = useState('');
   const [uploadedPreviewUrl, setUploadedPreviewUrl] = useState<string>(
@@ -82,7 +88,7 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
   const handleGenerateAiPortrait = async () => {
     if (!appearancePrompt.trim()) {
       setStatusMessage(
-        'Enter an Appearance Description first so Gemini can generate a matching character portrait.'
+        'Enter a Physical Description first so Gemini can generate a matching character portrait.'
       );
       return;
     }
@@ -98,7 +104,7 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: `Studio reference portrait of ${name || 'music video protagonist'}, ${appearancePrompt}, wearing ${wardrobeLock || 'cinematic stage attire'}, hairstyle: ${hairstyleLock || 'signature style'}, 8k studio lighting`,
+          prompt: `Studio reference portrait of ${name || 'music video protagonist'} (${age}), ${appearancePrompt}, facial expression: ${facialExpression}, wearing ${wardrobeLock || 'cinematic stage attire'}, hairstyle: ${hairstyleLock || 'signature style'}, 8k studio lighting`,
           aspectRatio: '1:1',
           explicitBillingAuthorized: true,
         }),
@@ -126,7 +132,7 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
     e.preventDefault();
     if (!name.trim() || !appearancePrompt.trim()) {
       setStatusMessage(
-        'Please enter both a Character Name and Appearance Description to lock character consistency.'
+        'Please enter both a Character Name and Physical Description to lock character consistency.'
       );
       return;
     }
@@ -135,16 +141,20 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
       id: `char_${Date.now()}`,
       ownerId: 'demo_user',
       name: name.trim(),
+      age: age.trim() || '25 years old',
       role: role.trim() || 'Featured Performer',
       appearancePrompt: appearancePrompt.trim(),
+      facialExpression:
+        facialExpression.trim() || 'Expressive, natural emotional depth',
       wardrobeLock:
         wardrobeLock.trim() || 'Consistent studio silhouette jacket and accessories',
       hairstyleLock: hairstyleLock.trim() || 'Consistent signature hairstyle across scenes',
       referenceImageUrl: uploadedPreviewUrl,
-      frontViewNote: 'Direct front studio reference portrait with neutral lighting',
-      sideViewNote: '90-degree profile silhouette locking jawline and hairstyle',
-      backViewNote: 'Full back wardrobe reference for walking & stage tracking shots',
+      frontViewNote: `Direct front studio reference portrait (${age || '25y'}, ${facialExpression || 'neutral expression'})`,
+      sideViewNote: `90-degree profile silhouette locking jawline and hairstyle (${hairstyleLock || 'signature cut'})`,
+      backViewNote: `Full back wardrobe reference (${wardrobeLock || 'signature jacket'}) for walking & tracking shots`,
       consistencySeed: Math.floor(100000 + Math.random() * 900000),
+      referenceSheetGenerated: true,
     };
 
     try {
@@ -163,37 +173,53 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
     setWardrobeLock('');
     setHairstyleLock('');
     setStatusMessage(
-      `Saved "${newChar.name}" to persistent Character Consistency Library (Seed #${newChar.consistencySeed}).`
+      `Saved "${newChar.name}" (${newChar.age}) to persistent Character Consistency Library (Seed #${newChar.consistencySeed}).`
     );
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="bg-[#0F1624] border border-slate-800 rounded-xl p-5 flex flex-wrap items-center justify-between gap-4">
+    <div className="flex flex-col gap-6 pb-12">
+      <div className="bg-[#0B0F19]/95 border border-slate-800/90 rounded-2xl p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 shadow-xl">
         <div>
-          <div className="flex items-center gap-2 text-xs text-indigo-400 font-medium">
+          <div className="flex items-center gap-2 text-xs text-violet-400 font-mono uppercase tracking-wider">
             <Users className="w-3.5 h-3.5" />
-            <span>AI CHARACTER CONSISTENCY STUDIO · MULTI-ANGLE REFERENCE LOCK</span>
+            <span>AI Character Consistency Studio · Multi-Angle Identity Lock</span>
           </div>
-          <h2 className="text-lg font-bold text-slate-100 mt-1">
-            Character Reference Sheets & Multi-Scene Identity Lock
+          <h2 className="text-xl sm:text-2xl font-bold text-white font-['Bricolage_Grotesque'] mt-1">
+            Character Reference Sheets & Multi-Scene Continuity
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Maintain consistent facial features, wardrobe, and hairstyle across every scene in your full-length music video.
+          <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
+            Lock character name, age, physical traits, facial expression, wardrobe, and multi-angle reference turnaround sheets so every scene in your video features the exact same performers.
           </p>
         </div>
+
+        {onSyncCharactersToAllScenes && (
+          <button
+            type="button"
+            onClick={() => {
+              onSyncCharactersToAllScenes();
+              setStatusMessage(
+                'Injected active cast identity & wardrobe locks into all project scene prompts.'
+              );
+            }}
+            className="min-h-[44px] px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-semibold flex items-center gap-2 shadow-lg shadow-violet-950/50 transition cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Inject Active Cast Into All Scene Prompts</span>
+          </button>
+        )}
       </div>
 
       {statusMessage && (
         <div
           role="status"
-          className="bg-indigo-950/50 border border-indigo-500/40 rounded-lg px-4 py-2.5 text-xs text-indigo-200 flex items-center justify-between"
+          className="bg-violet-950/50 border border-violet-500/40 rounded-xl px-4 py-3 text-xs text-violet-200 flex items-center justify-between gap-2"
         >
           <span>{statusMessage}</span>
           <button
             type="button"
             onClick={() => setStatusMessage(null)}
-            className="text-indigo-300 hover:text-white cursor-pointer"
+            className="text-violet-300 hover:text-white cursor-pointer font-mono"
           >
             Dismiss
           </button>
@@ -204,11 +230,11 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
         {/* Left 5 Cols: Create New Consistent Character Form */}
         <form
           onSubmit={handleCreateCharacter}
-          className="lg:col-span-5 bg-[#0F1624] border border-slate-800 rounded-xl p-5 flex flex-col gap-4"
+          className="lg:col-span-5 bg-[#0B0F19]/95 border border-slate-800/90 rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xl"
         >
-          <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-            <Plus className="w-4 h-4 text-indigo-400" />
-            Create Custom Character Sheet
+          <h3 className="text-base font-bold text-white font-['Bricolage_Grotesque'] flex items-center gap-2">
+            <Plus className="w-4 h-4 text-violet-400" />
+            Create Custom Character Continuity Sheet
           </h3>
 
           <div className="flex items-center gap-4">
@@ -216,11 +242,11 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
               src={uploadedPreviewUrl}
               alt="Character reference preview"
               referrerPolicy="no-referrer"
-              className="w-16 h-16 rounded-lg object-cover border border-slate-700 bg-slate-900 shrink-0"
+              className="w-16 h-16 rounded-xl object-cover border border-slate-700 bg-slate-900 shrink-0"
             />
             <div className="flex flex-col gap-1.5">
-              <label className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-medium text-slate-200 flex items-center gap-1.5 cursor-pointer w-fit">
-                <Upload className="w-3.5 h-3.5 text-cyan-400" />
+              <label className="min-h-[40px] px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-xl text-xs font-semibold text-slate-200 flex items-center gap-1.5 cursor-pointer w-fit">
+                <Upload className="w-3.5 h-3.5 text-sky-400" />
                 <span>
                   {isUploadingPhoto ? 'Uploading Photo...' : 'Upload Reference Photo'}
                 </span>
@@ -232,58 +258,96 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
                 />
               </label>
               <span className="text-[11px] text-slate-400">
-                Persisted to server storage for FFmpeg & reference-to-video.
+                Persisted to server storage for FFmpeg & reference-to-video continuity.
               </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label
+                htmlFor="char-name-input"
+                className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1"
+              >
+                Character Name
+              </label>
+              <input
+                id="char-name-input"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g., Aria Vance"
+                className="w-full min-h-[42px] bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="char-age-input"
+                className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1"
+              >
+                Character Age
+              </label>
+              <input
+                id="char-age-input"
+                type="text"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                placeholder="e.g., 25 years old"
+                className="w-full min-h-[42px] bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label
+                htmlFor="char-role-input"
+                className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1"
+              >
+                Role in Music Video
+              </label>
+              <input
+                id="char-role-input"
+                type="text"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full min-h-[42px] bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="char-expression-input"
+                className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1"
+              >
+                Signature Facial Expression
+              </label>
+              <input
+                id="char-expression-input"
+                type="text"
+                value={facialExpression}
+                onChange={(e) => setFacialExpression(e.target.value)}
+                placeholder="e.g., Melancholic, soulful gaze"
+                className="w-full min-h-[42px] bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white"
+              />
             </div>
           </div>
 
           <div>
             <label
-              htmlFor="char-name-input"
-              className="text-xs font-medium text-slate-300 block mb-1"
-            >
-              Character Name
-            </label>
-            <input
-              id="char-name-input"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g., Nova Sterling"
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="char-role-input"
-              className="text-xs font-medium text-slate-300 block mb-1"
-            >
-              Role in Music Video
-            </label>
-            <input
-              id="char-role-input"
-              type="text"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100"
-            />
-          </div>
-
-          <div>
-            <label
               htmlFor="char-appearance-input"
-              className="text-xs font-medium text-slate-300 block mb-1"
+              className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1"
             >
-              Facial Features & Appearance Description
+              Physical Description & Facial Structure
             </label>
             <textarea
               id="char-appearance-input"
               rows={2}
               value={appearancePrompt}
               onChange={(e) => setAppearancePrompt(e.target.value)}
-              placeholder="Describe facial structure, eyes, skin tone, lighting..."
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-100"
+              placeholder="Describe facial structure, eyes, skin tone, build, and distinguishing details..."
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs sm:text-sm text-white"
             />
           </div>
 
@@ -291,24 +355,24 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
             <div>
               <label
                 htmlFor="char-wardrobe-input"
-                className="text-xs font-medium text-slate-300 block mb-1"
+                className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1"
               >
-                Wardrobe Lock
+                Clothes / Wardrobe Lock
               </label>
               <input
                 id="char-wardrobe-input"
                 type="text"
                 value={wardrobeLock}
                 onChange={(e) => setWardrobeLock(e.target.value)}
-                placeholder="e.g., Crimson velvet jacket"
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100"
+                placeholder="e.g., Charcoal wool trench coat"
+                className="w-full min-h-[42px] bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white"
               />
             </div>
 
             <div>
               <label
                 htmlFor="char-hair-input"
-                className="text-xs font-medium text-slate-300 block mb-1"
+                className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1"
               >
                 Hairstyle Lock
               </label>
@@ -317,15 +381,15 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
                 type="text"
                 value={hairstyleLock}
                 onChange={(e) => setHairstyleLock(e.target.value)}
-                placeholder="e.g., Silver braided crown"
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100"
+                placeholder="e.g., Wavy midnight-black bob"
+                className="w-full min-h-[42px] bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white"
               />
             </div>
           </div>
 
           {/* Optional AI Portrait Generator via Gemini Image API */}
-          <div className="bg-slate-950/90 border border-slate-800 rounded-lg p-3 flex flex-col gap-2">
-            <label className="flex items-center gap-2 text-[11px] text-slate-300 cursor-pointer">
+          <div className="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 flex flex-col gap-2">
+            <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
               <input
                 type="checkbox"
                 checked={explicitPortraitBillingConsent}
@@ -338,7 +402,7 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
               type="button"
               onClick={handleGenerateAiPortrait}
               disabled={isGeneratingAiPortrait}
-              className="py-1.5 px-3 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-indigo-300 text-xs font-medium rounded-lg flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+              className="min-h-[40px] py-2 px-3 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-violet-300 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               <Wand2 className="w-3.5 h-3.5" />
               {isGeneratingAiPortrait
@@ -349,10 +413,10 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
 
           <button
             type="submit"
-            className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
+            className="w-full min-h-[44px] py-2.5 px-4 bg-violet-600 hover:bg-violet-500 text-white text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
             <Sparkles className="w-4 h-4" />
-            Generate Reference Sheet & Save Character
+            Generate 3-Angle Reference Sheet & Save Character
           </button>
         </form>
 
@@ -363,7 +427,7 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
             return (
               <div
                 key={char.id}
-                className="bg-[#0F1624] border border-slate-800 rounded-xl p-5 flex flex-col gap-4"
+                className="bg-[#0B0F19]/95 border border-slate-800/90 rounded-2xl p-5 flex flex-col gap-4 shadow-xl"
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="flex items-center gap-3.5">
@@ -374,16 +438,21 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
                       className="w-16 h-16 rounded-xl object-cover border border-slate-700 bg-slate-900"
                     />
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base font-bold text-slate-100">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="text-base font-bold text-white font-['Bricolage_Grotesque']">
                           {char.name}
                         </h3>
-                        <span className="text-xs text-slate-400">·</span>
-                        <span className="text-xs text-indigo-400 font-medium">
+                        {char.age && (
+                          <span className="text-xs font-mono text-sky-400">
+                            ({char.age})
+                          </span>
+                        )}
+                        <span className="text-xs text-slate-500">·</span>
+                        <span className="text-xs text-violet-400 font-medium">
                           {char.role}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-slate-300 mt-1">
                         {char.appearancePrompt}
                       </p>
                       <div className="flex flex-wrap items-center gap-3 text-[11px] font-mono text-slate-400 mt-1.5">
@@ -392,7 +461,13 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
                           Seed #{char.consistencySeed}
                         </span>
                         <span>·</span>
-                        <span>Wardrobe: {char.wardrobeLock}</span>
+                        <span>Clothes: {char.wardrobeLock}</span>
+                        {char.facialExpression && (
+                          <>
+                            <span>·</span>
+                            <span>Expression: {char.facialExpression}</span>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -401,15 +476,15 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
                     <button
                       type="button"
                       onClick={() => onToggleProjectCharacter(char.id)}
-                      className={`px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border ${
+                      className={`min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border ${
                         isAssigned
-                          ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200'
+                          ? 'bg-violet-600/25 border-violet-500 text-violet-100'
                           : 'bg-slate-900 border-slate-700 text-slate-300 hover:text-white'
                       }`}
                     >
                       {isAssigned ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-indigo-400" />
+                          <Check className="w-3.5 h-3.5 text-violet-400" />
                           Cast in Active Video
                         </>
                       ) : (
@@ -425,7 +500,7 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
                         type="button"
                         aria-label={`Delete ${char.name}`}
                         onClick={() => onDeleteCharacter(char.id)}
-                        className="p-2 text-rose-400 hover:bg-rose-950/40 border border-slate-800 rounded-lg cursor-pointer"
+                        className="min-h-[42px] min-w-[42px] flex items-center justify-center text-rose-400 hover:bg-rose-950/40 border border-slate-800 rounded-xl cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -435,21 +510,24 @@ export const CharacterStudioWorkspace: React.FC<CharacterStudioWorkspaceProps> =
 
                 {/* Front / Side / Back Multi-Angle Consistency Sheet */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-800/80 text-xs">
-                  <div className="bg-slate-950/70 border border-slate-800/80 rounded-lg p-3">
-                    <div className="font-semibold text-slate-200 mb-1">
-                      Front View Reference
+                  <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3">
+                    <div className="font-semibold text-white mb-1 flex items-center justify-between">
+                      <span>Front View Turnaround</span>
+                      <span className="text-[10px] font-mono text-violet-400">0°</span>
                     </div>
                     <p className="text-slate-400 text-[11px]">{char.frontViewNote}</p>
                   </div>
-                  <div className="bg-slate-950/70 border border-slate-800/80 rounded-lg p-3">
-                    <div className="font-semibold text-slate-200 mb-1">
-                      Side Profile Reference
+                  <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3">
+                    <div className="font-semibold text-white mb-1 flex items-center justify-between">
+                      <span>Side Profile Turnaround</span>
+                      <span className="text-[10px] font-mono text-sky-400">90°</span>
                     </div>
                     <p className="text-slate-400 text-[11px]">{char.sideViewNote}</p>
                   </div>
-                  <div className="bg-slate-950/70 border border-slate-800/80 rounded-lg p-3">
-                    <div className="font-semibold text-slate-200 mb-1">
-                      Back / Motion Reference
+                  <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3">
+                    <div className="font-semibold text-white mb-1 flex items-center justify-between">
+                      <span>Back / Motion Reference</span>
+                      <span className="text-[10px] font-mono text-emerald-400">180°</span>
                     </div>
                     <p className="text-slate-400 text-[11px]">{char.backViewNote}</p>
                   </div>

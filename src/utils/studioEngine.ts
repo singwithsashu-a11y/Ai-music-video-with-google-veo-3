@@ -2,16 +2,138 @@ import {
   AnimationPreset,
   AspectRatioOption,
   CharacterProfileItem,
+  ColorGradingSettings,
   DetectedSongSection,
   DirectorStyle,
+  ExportStudioConfig,
   GenerationCostEstimate,
+  LyricsDisplaySettings,
   LyricSymbolismItem,
+  PromptCameraControl,
+  PromptEnvironmentOption,
+  PromptLightingOption,
+  PromptMoodOption,
+  PromptStudioFields,
+  PromptStudioItem,
+  PromptVisualStyle,
   ProviderPriority,
   StoryboardScene,
   SubtitleCue,
   SymbolismInterpretationMode,
   TransitionType,
 } from '../types/studio';
+
+export const PROMPT_VISUAL_STYLES: PromptVisualStyle[] = [
+  'Cinematic Realism',
+  'Photorealistic',
+  'Bollywood Music Video',
+  'Anime',
+  '3D Animation',
+  '2D Animation',
+  'Dreamlike Fantasy',
+  'Dark Cinematic',
+  'Vintage Film',
+  'Documentary',
+  'Music Video Aesthetic',
+  'Surreal Art',
+];
+
+export const PROMPT_CAMERA_CONTROLS: PromptCameraControl[] = [
+  'Close-up',
+  'Extreme Close-up',
+  'Medium Shot',
+  'Wide Shot',
+  'Establishing Shot',
+  'Over-the-Shoulder',
+  'Drone Shot',
+  'Tracking Shot',
+  'Dolly In',
+  'Dolly Out',
+  'Pan Left / Right',
+  'Tilt Up / Down',
+  'Handheld Camera',
+  'Slow Motion',
+];
+
+export const PROMPT_LIGHTING_OPTIONS: PromptLightingOption[] = [
+  'Golden Hour',
+  'Blue Hour',
+  'Moonlight',
+  'Neon Lighting',
+  'Soft Natural Light',
+  'Cinematic Backlight',
+  'Studio Lighting',
+  'Dramatic Shadows',
+  'Volumetric Lighting',
+];
+
+export const PROMPT_ENVIRONMENT_OPTIONS: PromptEnvironmentOption[] = [
+  'Rooftop',
+  'Rainy Street',
+  'Bedroom',
+  'Beach',
+  'Mountains',
+  'Forest',
+  'City at Night',
+  'Empty Highway',
+  'Wedding Venue',
+  'Cafe',
+  'Futuristic City',
+  'Fantasy World',
+];
+
+export const PROMPT_MOOD_OPTIONS: PromptMoodOption[] = [
+  'Romantic',
+  'Sad',
+  'Emotional',
+  'Lonely',
+  'Heartbroken',
+  'Mysterious',
+  'Hopeful',
+  'Nostalgic',
+  'Dark',
+  'Energetic',
+  'Inspirational',
+];
+
+export const DEFAULT_LYRICS_DISPLAY_SETTINGS: LyricsDisplaySettings = {
+  mode: 'none',
+  fontFamily: 'Bricolage Grotesque',
+  fontSizePx: 26,
+  position: 'bottom',
+  textColor: '#F8FAFC',
+  outlineColor: '#090D16',
+  shadowEnabled: true,
+  animationStyle: 'cinematic_fade',
+  animationSpeed: 1.0,
+};
+
+export const DEFAULT_COLOR_GRADING_SETTINGS: ColorGradingSettings = {
+  temperature: 0,
+  contrast: 108,
+  brightness: 100,
+  saturation: 112,
+  exposure: 0,
+  filmGrain: 16,
+  vignette: 28,
+  motionBlur: 15,
+  glow: 22,
+  lensFlare: 18,
+  depthOfField: 40,
+  fadeInSec: 1.5,
+  fadeOutSec: 2.0,
+};
+
+export const DEFAULT_EXPORT_STUDIO_CONFIG: ExportStudioConfig = {
+  resolution: '1080p',
+  aspectRatio: '16:9',
+  frameRate: 24,
+  audioBitrate: '320k',
+  embedSubtitles: false,
+  cleanVideoWithoutLyrics: true,
+  titleSequenceText: '',
+  outroSequenceText: '',
+};
 
 export const DIRECTOR_STYLE_CONFIGS: Record<
   DirectorStyle,
@@ -22,6 +144,14 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: string;
     transitionDefault: TransitionType;
     colorPaletteHex: [string, string];
+    storyArcScenes: {
+      narrativeBeat: string;
+      actionDescription: string;
+      environment: PromptEnvironmentOption;
+      lighting: PromptLightingOption;
+      cameraControl: PromptCameraControl;
+      mood: PromptMoodOption;
+    }[];
   }
 > = {
   'Romantic music video': {
@@ -31,6 +161,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Rain-kissed Parisian rooftop terrace at twilight',
     transitionDefault: 'Cross Dissolve',
     colorPaletteHex: ['#F59E0B', '#EC4899'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Lonely person walking on a rainy street under warm cafe reflections',
+        actionDescription: 'Protagonist walks slowly along glistening cobblestones, coat collar raised as raindrops catch amber streetlights',
+        environment: 'Rainy Street',
+        lighting: 'Blue Hour',
+        cameraControl: 'Tracking Shot',
+        mood: 'Lonely',
+      },
+      {
+        narrativeBeat: 'Romantic memory flashback in golden-hour sunlight',
+        actionDescription: 'Two lovers laughing and spinning together in warm sunlit haze with shallow depth-of-field lens flare',
+        environment: 'Beach',
+        lighting: 'Golden Hour',
+        cameraControl: 'Slow Motion',
+        mood: 'Romantic',
+      },
+      {
+        narrativeBeat: 'Close-up looking at a cherished photograph in a quiet room',
+        actionDescription: 'Intimate macro-to-close-up shot of hands holding a vintage Polaroid photograph as warm candlelight flickers',
+        environment: 'Bedroom',
+        lighting: 'Soft Natural Light',
+        cameraControl: 'Close-up',
+        mood: 'Nostalgic',
+      },
+      {
+        narrativeBeat: 'Window silhouette during midnight rainfall',
+        actionDescription: 'Subject leans forehead against rain-streaked glass, city bokeh lights shimmering across their face',
+        environment: 'Cafe',
+        lighting: 'Neon Lighting',
+        cameraControl: 'Extreme Close-up',
+        mood: 'Emotional',
+      },
+      {
+        narrativeBeat: 'Wide shot on rooftop under dramatic twilight clouds',
+        actionDescription: 'Sweeping aerial crane orbit around the vocalist standing on a high metropolitan rooftop as wind moves their coat',
+        environment: 'Rooftop',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Drone Shot',
+        mood: 'Hopeful',
+      },
+      {
+        narrativeBeat: 'Emotional camera pullback into the glowing horizon',
+        actionDescription: 'Slow dolly pullback revealing two silhouettes reuniting beneath streetlamps as rain subsides into mist',
+        environment: 'City at Night',
+        lighting: 'Cinematic Backlight',
+        cameraControl: 'Dolly Out',
+        mood: 'Romantic',
+      },
+    ],
   },
   'Sad emotional music video': {
     cameraDefault: '35mm Shallow Depth Medium Shot',
@@ -39,6 +219,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Misty coastal highway and empty brutalist apartment',
     transitionDefault: 'Fade to Black',
     colorPaletteHex: ['#38BDF8', '#6366F1'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Lonely person walking on a rainy street at dusk',
+        actionDescription: 'Solitary figure walking down a wet asphalt street, reflections of pale blue neon rippling in puddles',
+        environment: 'Rainy Street',
+        lighting: 'Blue Hour',
+        cameraControl: 'Tracking Shot',
+        mood: 'Lonely',
+      },
+      {
+        narrativeBeat: 'Romantic memory flashback fading like a dream',
+        actionDescription: 'Soft-focus flashback of a warm embrace in a sunlit room, edges dissolving into cold blue mist',
+        environment: 'Bedroom',
+        lighting: 'Golden Hour',
+        cameraControl: 'Handheld Camera',
+        mood: 'Nostalgic',
+      },
+      {
+        narrativeBeat: 'Close-up looking at photograph on an empty table',
+        actionDescription: 'Tight anamorphic close-up of eyes glistening with emotion while looking at a faded photograph',
+        environment: 'Bedroom',
+        lighting: 'Soft Natural Light',
+        cameraControl: 'Close-up',
+        mood: 'Sad',
+      },
+      {
+        narrativeBeat: 'Window reflection during heavy rainfall',
+        actionDescription: 'Raindrops racing down a tall apartment window, superimposing storm clouds over the protagonist’s face',
+        environment: 'Bedroom',
+        lighting: 'Dramatic Shadows',
+        cameraControl: 'Extreme Close-up',
+        mood: 'Heartbroken',
+      },
+      {
+        narrativeBeat: 'Wide shot on rooftop under cloudy sky',
+        actionDescription: 'Expansive wide establishing frame of the protagonist standing at the edge of a wind-swept rooftop under brooding clouds',
+        environment: 'Rooftop',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Wide Shot',
+        mood: 'Emotional',
+      },
+      {
+        narrativeBeat: 'Emotional camera pullback along an empty highway',
+        actionDescription: 'Slow receding dolly-out shot leaving the solitary figure framed against dawn mist on an empty coastal road',
+        environment: 'Empty Highway',
+        lighting: 'Moonlight',
+        cameraControl: 'Dolly Out',
+        mood: 'Hopeful',
+      },
+    ],
   },
   'Breakup music video': {
     cameraDefault: '85mm Split-Diopter Portrait',
@@ -47,6 +277,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Midnight diner booth and rain-streaked glass',
     transitionDefault: 'Cross Dissolve',
     colorPaletteHex: ['#FB7185', '#3B82F6'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Unanswered call in a rain-drenched city street',
+        actionDescription: 'Protagonist stands alone under a flickering streetlamp in pouring rain holding a glowing phone screen',
+        environment: 'Rainy Street',
+        lighting: 'Neon Lighting',
+        cameraControl: 'Medium Shot',
+        mood: 'Heartbroken',
+      },
+      {
+        narrativeBeat: 'Bittersweet flashback in a warm cafe booth',
+        actionDescription: 'Memory of shared coffee and quiet laughter across a wooden cafe table, shifting to an empty chair',
+        environment: 'Cafe',
+        lighting: 'Golden Hour',
+        cameraControl: 'Over-the-Shoulder',
+        mood: 'Nostalgic',
+      },
+      {
+        narrativeBeat: 'Close-up of hands letting go of a keepsake photograph',
+        actionDescription: 'Extreme close-up of trembling fingers setting down a framed photograph beside a rain-splattered window',
+        environment: 'Bedroom',
+        lighting: 'Dramatic Shadows',
+        cameraControl: 'Extreme Close-up',
+        mood: 'Sad',
+      },
+      {
+        narrativeBeat: 'Driving alone down an empty midnight highway',
+        actionDescription: 'Interior-to-exterior tracking shot of headlights cutting through fog on a deserted highway',
+        environment: 'Empty Highway',
+        lighting: 'Moonlight',
+        cameraControl: 'Tracking Shot',
+        mood: 'Lonely',
+      },
+      {
+        narrativeBeat: 'Wide rooftop catharsis under storm clouds',
+        actionDescription: 'Dramatic wide crane shot on a wet rooftop as lightning illuminates the skyline behind the singer',
+        environment: 'Rooftop',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Wide Shot',
+        mood: 'Emotional',
+      },
+      {
+        narrativeBeat: 'Slow camera pullback into first morning light',
+        actionDescription: 'Gentle camera pullback as the protagonist walks toward the horizon under cool dawn sky',
+        environment: 'City at Night',
+        lighting: 'Blue Hour',
+        cameraControl: 'Dolly Out',
+        mood: 'Hopeful',
+      },
+    ],
   },
   'Rap music video': {
     cameraDefault: '16mm Ultra-Wide Low Angle',
@@ -55,6 +335,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Underground concrete vault with chrome floodlights',
     transitionDefault: 'Beat Flash Cut',
     colorPaletteHex: ['#EF4444', '#F59E0B'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Low-angle arrival under metropolitan neon',
+        actionDescription: 'Artist steps out of a matte-black coupe onto wet asphalt surrounded by billowing steam and neon reflections',
+        environment: 'City at Night',
+        lighting: 'Neon Lighting',
+        cameraControl: 'Establishing Shot',
+        mood: 'Energetic',
+      },
+      {
+        narrativeBeat: 'Kinetic performance in industrial strobe corridor',
+        actionDescription: 'High-contrast low-angle tracking shot moving backward ahead of the performer as overhead xenon tubes pulse on beat',
+        environment: 'Futuristic City',
+        lighting: 'Studio Lighting',
+        cameraControl: 'Tracking Shot',
+        mood: 'Dark',
+      },
+      {
+        narrativeBeat: 'Extreme close-up vocal delivery with anamorphic flare',
+        actionDescription: 'Tight 16mm lens push-in capturing intense facial expression and chrome jewelry catching rim light',
+        environment: 'City at Night',
+        lighting: 'Cinematic Backlight',
+        cameraControl: 'Extreme Close-up',
+        mood: 'Energetic',
+      },
+      {
+        narrativeBeat: 'Rooftop helipad cipher overlooking downtown skyline',
+        actionDescription: '360-degree drone orbit around the artist standing on a high-rise rooftop surrounded by city lights',
+        environment: 'Rooftop',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Drone Shot',
+        mood: 'Inspirational',
+      },
+      {
+        narrativeBeat: 'Midnight highway pursuit convoy in slow motion',
+        actionDescription: 'Russian-arm tracking shot parallel to rolling headlights through rain spray on an empty expressway',
+        environment: 'Empty Highway',
+        lighting: 'Dramatic Shadows',
+        cameraControl: 'Slow Motion',
+        mood: 'Mysterious',
+      },
+      {
+        narrativeBeat: 'Final silhouette pullback in volumetric spotlight',
+        actionDescription: 'Slow camera pullback into darkness as a single vertical beam of light silhouettes the artist',
+        environment: 'Rooftop',
+        lighting: 'Cinematic Backlight',
+        cameraControl: 'Dolly Out',
+        mood: 'Dark',
+      },
+    ],
   },
   'Cinematic Bollywood style': {
     cameraDefault: '40mm Panavision Wide Crane Shot',
@@ -63,6 +393,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Grand marble courtyard reflecting thousands of diyas',
     transitionDefault: 'Anamorphic Whip Pan',
     colorPaletteHex: ['#FBBF24', '#EC4899'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Grand palace courtyard entrance through floating lanterns',
+        actionDescription: 'Sweeping crane shot descending over marble arches and reflecting pools lit by hundreds of golden diyas',
+        environment: 'Wedding Venue',
+        lighting: 'Golden Hour',
+        cameraControl: 'Establishing Shot',
+        mood: 'Romantic',
+      },
+      {
+        narrativeBeat: 'First glance across flowing silk drapes in slow motion',
+        actionDescription: 'Slow-motion dolly push-in as crimson and gold organza curtains part in the breeze revealing the lead characters',
+        environment: 'Wedding Venue',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Slow Motion',
+        mood: 'Emotional',
+      },
+      {
+        narrativeBeat: 'Intimate close-up under monsoon rain and moonlight',
+        actionDescription: 'Anamorphic close-up of expressive eyes and raindrops glistening on traditional jewelry under sapphire moonlight',
+        environment: 'Rooftop',
+        lighting: 'Moonlight',
+        cameraControl: 'Close-up',
+        mood: 'Romantic',
+      },
+      {
+        narrativeBeat: 'Mountain ridge silhouette against golden sunset',
+        actionDescription: 'Aerial drone orbit around the couple standing on a misty Himalayan mountain ridge at sunset',
+        environment: 'Mountains',
+        lighting: 'Golden Hour',
+        cameraControl: 'Drone Shot',
+        mood: 'Inspirational',
+      },
+      {
+        narrativeBeat: 'Choreographed celebration amidst rising golden sparks',
+        actionDescription: 'Dynamic wide tracking shot capturing synchronized movement through swirling marigold petals and warm backlights',
+        environment: 'Wedding Venue',
+        lighting: 'Cinematic Backlight',
+        cameraControl: 'Tracking Shot',
+        mood: 'Energetic',
+      },
+      {
+        narrativeBeat: 'Epic camera pullback into starlit palace horizon',
+        actionDescription: 'Majestic crane pullback revealing the illuminated palace reflected in tranquil water beneath night stars',
+        environment: 'Wedding Venue',
+        lighting: 'Moonlight',
+        cameraControl: 'Dolly Out',
+        mood: 'Hopeful',
+      },
+    ],
   },
   'Anime music video': {
     cameraDefault: '24mm Dynamic Anime Perspective',
@@ -71,6 +451,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Shinjuku pedestrian overpass under a comet-lit sky',
     transitionDefault: 'Beat Flash Cut',
     colorPaletteHex: ['#818CF8', '#F472B6'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Twilight train crossing as cherry blossoms drift in wind',
+        actionDescription: 'Protagonist stands at a glowing railway crossing as an express train blurs past in golden-violet twilight',
+        environment: 'City at Night',
+        lighting: 'Blue Hour',
+        cameraControl: 'Wide Shot',
+        mood: 'Nostalgic',
+      },
+      {
+        narrativeBeat: 'Rooftop gaze toward a comet-streaked sky',
+        actionDescription: 'Wind sweeps the character’s hair on a school rooftop while a luminous comet splits the purple clouds above',
+        environment: 'Rooftop',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Tilt Up / Down',
+        mood: 'Hopeful',
+      },
+      {
+        narrativeBeat: 'Extreme close-up of eyes reflecting starlight',
+        actionDescription: 'Detailed anime macro shot of shimmering pupils reflecting falling stars and neon city lights',
+        environment: 'Rooftop',
+        lighting: 'Neon Lighting',
+        cameraControl: 'Extreme Close-up',
+        mood: 'Emotional',
+      },
+      {
+        narrativeBeat: 'Running through rain-slicked neon alleyways',
+        actionDescription: 'Dynamic sakuga tracking shot following the protagonist sprinting across glowing puddles',
+        environment: 'Rainy Street',
+        lighting: 'Neon Lighting',
+        cameraControl: 'Tracking Shot',
+        mood: 'Energetic',
+      },
+      {
+        narrativeBeat: 'Surreal astral horizon where sea meets sky',
+        actionDescription: 'Dreamlike 360-degree pan over shallow mirror-like water reflecting an infinite starry galaxy',
+        environment: 'Fantasy World',
+        lighting: 'Moonlight',
+        cameraControl: 'Pan Left / Right',
+        mood: 'Mysterious',
+      },
+      {
+        narrativeBeat: 'Emotional pullback as two silhouettes reach across light',
+        actionDescription: 'Slow camera pullback into radiant sunrise flare as two hands clasp in silhouette',
+        environment: 'Beach',
+        lighting: 'Golden Hour',
+        cameraControl: 'Dolly Out',
+        mood: 'Inspirational',
+      },
+    ],
   },
   '3D animated music video': {
     cameraDefault: '35mm Virtual Cinema Camera',
@@ -79,6 +509,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Surreal kinetic sculpture garden in low gravity',
     transitionDefault: 'Dolly Zoom In',
     colorPaletteHex: ['#2DD4BF', '#8B5CF6'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Awakening inside a bioluminescent crystal forest',
+        actionDescription: 'Stylized 3D character opens their eyes as glowing spores rise through volumetric forest rays',
+        environment: 'Forest',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Establishing Shot',
+        mood: 'Mysterious',
+      },
+      {
+        narrativeBeat: 'Gravity-defying walk across floating architectural fragments',
+        actionDescription: 'Smooth spline camera tracking the character stepping across levitating stone stairs in a surreal sky',
+        environment: 'Fantasy World',
+        lighting: 'Cinematic Backlight',
+        cameraControl: 'Tracking Shot',
+        mood: 'Hopeful',
+      },
+      {
+        narrativeBeat: 'Close-up interaction with a glowing holographic memory orb',
+        actionDescription: 'Shallow depth-of-field close-up as warm subsurface light illuminates the character’s face',
+        environment: 'Futuristic City',
+        lighting: 'Neon Lighting',
+        cameraControl: 'Close-up',
+        mood: 'Emotional',
+      },
+      {
+        narrativeBeat: 'High-speed flight through a neon futuristic canyon',
+        actionDescription: 'Sweeping virtual drone camera diving through towering holographic skyscrapers',
+        environment: 'Futuristic City',
+        lighting: 'Neon Lighting',
+        cameraControl: 'Drone Shot',
+        mood: 'Energetic',
+      },
+      {
+        narrativeBeat: 'Quiet reflection beside an astral mountain lake',
+        actionDescription: 'Wide anamorphic frame of aurora ribbons dancing over snow-capped peaks and mirror water',
+        environment: 'Mountains',
+        lighting: 'Moonlight',
+        cameraControl: 'Wide Shot',
+        mood: 'Nostalgic',
+      },
+      {
+        narrativeBeat: 'Grand pullback into a constellation of floating lanterns',
+        actionDescription: 'Camera pulls back from the character into thousands of ascending warm lanterns',
+        environment: 'Fantasy World',
+        lighting: 'Golden Hour',
+        cameraControl: 'Dolly Out',
+        mood: 'Inspirational',
+      },
+    ],
   },
   'Realistic music video': {
     cameraDefault: '35mm Arri Alexa Mini LF Natural Frame',
@@ -87,6 +567,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Late-night recording studio and downtown street',
     transitionDefault: 'Cross Dissolve',
     colorPaletteHex: ['#60A5FA', '#FBBF24'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Late-night walk down a rain-misted downtown street',
+        actionDescription: 'Handheld 35mm tracking shot following the musician walking past closed storefronts under sodium streetlights',
+        environment: 'Rainy Street',
+        lighting: 'Blue Hour',
+        cameraControl: 'Handheld Camera',
+        mood: 'Lonely',
+      },
+      {
+        narrativeBeat: 'Quiet songwriting moment in a sun-drenched bedroom',
+        actionDescription: 'Warm afternoon light streaming through blinds onto acoustic guitar strings and handwritten notebook pages',
+        environment: 'Bedroom',
+        lighting: 'Soft Natural Light',
+        cameraControl: 'Medium Shot',
+        mood: 'Nostalgic',
+      },
+      {
+        narrativeBeat: 'Intimate close-up at a vintage condenser microphone',
+        actionDescription: 'Shallow depth-of-field close-up capturing authentic vocal performance under warm tungsten studio key light',
+        environment: 'Cafe',
+        lighting: 'Studio Lighting',
+        cameraControl: 'Close-up',
+        mood: 'Emotional',
+      },
+      {
+        narrativeBeat: 'Looking out a rain-streaked train window at dusk',
+        actionDescription: 'Profile close-up as passing city lights blur across the glass in melancholic rhythm',
+        environment: 'City at Night',
+        lighting: 'Neon Lighting',
+        cameraControl: 'Extreme Close-up',
+        mood: 'Sad',
+      },
+      {
+        narrativeBeat: 'Wide rooftop performance overlooking the waking city',
+        actionDescription: 'Steadicam wide orbit on a concrete rooftop as golden sunrise breaks over the skyline',
+        environment: 'Rooftop',
+        lighting: 'Golden Hour',
+        cameraControl: 'Wide Shot',
+        mood: 'Hopeful',
+      },
+      {
+        narrativeBeat: 'Slow camera pullback down a coastal highway',
+        actionDescription: 'Receding dolly shot as the artist walks along a quiet coastal road bathed in warm evening light',
+        environment: 'Empty Highway',
+        lighting: 'Cinematic Backlight',
+        cameraControl: 'Dolly Out',
+        mood: 'Inspirational',
+      },
+    ],
   },
   'Fantasy music video': {
     cameraDefault: '28mm Wide Anamorphic Vista',
@@ -95,6 +625,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Obsidian cliffside temple above a sea of clouds',
     transitionDefault: 'Cross Dissolve',
     colorPaletteHex: ['#A855F7', '#06B6D4'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Solitary figure entering an ancient mist-veiled forest',
+        actionDescription: 'Wide establishing shot of silver moonlight beams piercing ancient redwood trees and glowing moss',
+        environment: 'Forest',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Establishing Shot',
+        mood: 'Mysterious',
+      },
+      {
+        narrativeBeat: 'Ethereal memory vision beside a mirror-still ocean',
+        actionDescription: 'Slow-motion shot of ripples of bioluminescent blue water illuminating the protagonist’s footsteps',
+        environment: 'Beach',
+        lighting: 'Moonlight',
+        cameraControl: 'Slow Motion',
+        mood: 'Romantic',
+      },
+      {
+        narrativeBeat: 'Close-up holding a glowing celestial crystal artifact',
+        actionDescription: 'Tight close-up as soft violet light dances across the character’s face and eyes',
+        environment: 'Fantasy World',
+        lighting: 'Cinematic Backlight',
+        cameraControl: 'Close-up',
+        mood: 'Emotional',
+      },
+      {
+        narrativeBeat: 'Ascending a mountain summit above a sea of clouds',
+        actionDescription: 'Sweeping drone shot circling jagged mountain peaks bathed in golden-violet aurora light',
+        environment: 'Mountains',
+        lighting: 'Golden Hour',
+        cameraControl: 'Drone Shot',
+        mood: 'Inspirational',
+      },
+      {
+        narrativeBeat: 'Cosmic storm awakening over a floating citadel',
+        actionDescription: 'Dramatic wide angle as ribbons of starlight swirl around ancient arches in the sky',
+        environment: 'Fantasy World',
+        lighting: 'Dramatic Shadows',
+        cameraControl: 'Wide Shot',
+        mood: 'Energetic',
+      },
+      {
+        narrativeBeat: 'Slow camera pullback into an infinite starry horizon',
+        actionDescription: 'Graceful dolly-out leaving the silhouette framed against twin moons and drifting embers',
+        environment: 'Fantasy World',
+        lighting: 'Moonlight',
+        cameraControl: 'Dolly Out',
+        mood: 'Hopeful',
+      },
+    ],
   },
   'Action music video': {
     cameraDefault: '18mm Russian Arm Tracking Shot',
@@ -103,6 +683,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Midnight expressway tunnel with rain spray',
     transitionDefault: 'Glitch Sync',
     colorPaletteHex: ['#F97316', '#0EA5E9'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Rain-soaked rooftop surveillance over a neon metropolis',
+        actionDescription: 'Protagonist stands at the precipice of a skyscraper in pouring rain looking down at neon traffic below',
+        environment: 'Rooftop',
+        lighting: 'Neon Lighting',
+        cameraControl: 'Establishing Shot',
+        mood: 'Dark',
+      },
+      {
+        narrativeBeat: 'High-speed midnight highway pursuit through tunnel strobes',
+        actionDescription: 'Low-angle tracking shot inches above wet asphalt as tail lights leave crimson streaks in the rain',
+        environment: 'Empty Highway',
+        lighting: 'Cinematic Backlight',
+        cameraControl: 'Tracking Shot',
+        mood: 'Energetic',
+      },
+      {
+        narrativeBeat: 'Extreme close-up of intense eyes in rearview mirror',
+        actionDescription: 'Tight anamorphic close-up of the driver’s eyes illuminated by passing amber tunnel lights',
+        environment: 'City at Night',
+        lighting: 'Dramatic Shadows',
+        cameraControl: 'Extreme Close-up',
+        mood: 'Mysterious',
+      },
+      {
+        narrativeBeat: 'Slow-motion sprint through rain and rising steam',
+        actionDescription: '120fps slow-motion side-tracking shot as water droplets hang suspended in mid-air around the runner',
+        environment: 'Rainy Street',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Slow Motion',
+        mood: 'Energetic',
+      },
+      {
+        narrativeBeat: 'Aerial drone climb above a futuristic bridge at dawn',
+        actionDescription: 'Sweeping drone ascent revealing suspension cables cutting through blue-hour mist',
+        environment: 'Futuristic City',
+        lighting: 'Blue Hour',
+        cameraControl: 'Drone Shot',
+        mood: 'Inspirational',
+      },
+      {
+        narrativeBeat: 'Cinematic pullback along the desert highway at sunrise',
+        actionDescription: 'Long dolly pullback as dust trails settle under warm golden-hour sunbeams',
+        environment: 'Empty Highway',
+        lighting: 'Golden Hour',
+        cameraControl: 'Dolly Out',
+        mood: 'Hopeful',
+      },
+    ],
   },
   'Travel music video': {
     cameraDefault: '24mm VistaVision Landscape Frame',
@@ -111,6 +741,56 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Nordic fjord ridge and winding coastal cliff road',
     transitionDefault: 'Anamorphic Whip Pan',
     colorPaletteHex: ['#10B981', '#3B82F6'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Dawn departure along an empty coastal highway',
+        actionDescription: 'Wide tracking shot of a vintage camper van cruising beside crashing turquoise ocean waves at sunrise',
+        environment: 'Empty Highway',
+        lighting: 'Golden Hour',
+        cameraControl: 'Tracking Shot',
+        mood: 'Hopeful',
+      },
+      {
+        narrativeBeat: 'Sunbeams piercing a misty emerald pine forest',
+        actionDescription: 'Steadicam walk along a fern-lined forest trail as volumetric morning light filters through tall canopy',
+        environment: 'Forest',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Medium Shot',
+        mood: 'Inspirational',
+      },
+      {
+        narrativeBeat: 'Close-up looking at a weathered travel map and photographs',
+        actionDescription: 'Warm natural-light close-up of hands tracing a route inside a cozy roadside cafe',
+        environment: 'Cafe',
+        lighting: 'Soft Natural Light',
+        cameraControl: 'Close-up',
+        mood: 'Nostalgic',
+      },
+      {
+        narrativeBeat: 'Golden-hour footprints along a secluded ocean beach',
+        actionDescription: 'Slow-motion low-angle shot of waves washing over footprints as sunset paints the sky amber and violet',
+        environment: 'Beach',
+        lighting: 'Golden Hour',
+        cameraControl: 'Slow Motion',
+        mood: 'Romantic',
+      },
+      {
+        narrativeBeat: 'Epic drone reveal on a high mountain summit',
+        actionDescription: '360-degree aerial drone shot of the traveler standing atop a dramatic mountain peak above clouds',
+        environment: 'Mountains',
+        lighting: 'Cinematic Backlight',
+        cameraControl: 'Drone Shot',
+        mood: 'Energetic',
+      },
+      {
+        narrativeBeat: 'Twilight pullback under a canopy of mountain stars',
+        actionDescription: 'Slow dolly pullback from a warm campfire under a crystal-clear Milky Way night sky',
+        environment: 'Mountains',
+        lighting: 'Moonlight',
+        cameraControl: 'Dolly Out',
+        mood: 'Emotional',
+      },
+    ],
   },
   'Story-based music video': {
     cameraDefault: '40mm Anamorphic Narrative Framing',
@@ -119,8 +799,203 @@ export const DIRECTOR_STYLE_CONFIGS: Record<
     environmentDefault: 'Metropolitan rooftop & illuminated brutalist stage',
     transitionDefault: 'Cross Dissolve',
     colorPaletteHex: ['#6366F1', '#06B6D4'],
+    storyArcScenes: [
+      {
+        narrativeBeat: 'Lonely person walking on a rainy street at midnight',
+        actionDescription: 'Cinematic tracking shot of a solitary protagonist walking down a rain-slicked avenue as neon signs shimmer in puddles',
+        environment: 'Rainy Street',
+        lighting: 'Neon Lighting',
+        cameraControl: 'Tracking Shot',
+        mood: 'Lonely',
+      },
+      {
+        narrativeBeat: 'Romantic memory flashback bathed in golden sunlight',
+        actionDescription: 'Dreamlike flashback in 24fps slow motion showing two people laughing on a sunlit beach with warm lens flare',
+        environment: 'Beach',
+        lighting: 'Golden Hour',
+        cameraControl: 'Slow Motion',
+        mood: 'Romantic',
+      },
+      {
+        narrativeBeat: 'Close-up looking at a faded photograph in dim bedroom light',
+        actionDescription: 'Intimate 50mm close-up of the protagonist holding a cherished photograph, subtle tear catching soft window light',
+        environment: 'Bedroom',
+        lighting: 'Soft Natural Light',
+        cameraControl: 'Close-up',
+        mood: 'Nostalgic',
+      },
+      {
+        narrativeBeat: 'Window reflection during heavy midnight rainfall',
+        actionDescription: 'Extreme close-up through rain-streaked glass where raindrops refract blue-hour streetlamps across the subject’s eyes',
+        environment: 'Bedroom',
+        lighting: 'Blue Hour',
+        cameraControl: 'Extreme Close-up',
+        mood: 'Sad',
+      },
+      {
+        narrativeBeat: 'Wide shot on rooftop under dramatic cloudy sky',
+        actionDescription: 'Sweeping wide crane shot of the protagonist standing on a metropolitan rooftop as volumetric light breaks through storm clouds',
+        environment: 'Rooftop',
+        lighting: 'Volumetric Lighting',
+        cameraControl: 'Wide Shot',
+        mood: 'Emotional',
+      },
+      {
+        narrativeBeat: 'Emotional camera pullback into the dawn horizon',
+        actionDescription: 'Slow, lingering dolly pullback from the rooftop silhouette as golden dawn light warms the city skyline',
+        environment: 'City at Night',
+        lighting: 'Cinematic Backlight',
+        cameraControl: 'Dolly Out',
+        mood: 'Hopeful',
+      },
+    ],
   },
 };
+
+/**
+ * Compiles a structured PromptStudioItem into a cohesive, studio-grade master video prompt.
+ */
+export function compileMasterPromptFromStudio(
+  visualStyles: PromptVisualStyle[],
+  cameraControls: PromptCameraControl[],
+  lightingOptions: PromptLightingOption[],
+  environments: PromptEnvironmentOption[],
+  moods: PromptMoodOption[],
+  fields: PromptStudioFields
+): string {
+  const stylePart =
+    visualStyles.length > 0 ? visualStyles.join(' + ') : 'Cinematic Realism';
+  const cameraPart =
+    cameraControls.length > 0
+      ? cameraControls.join(', ')
+      : fields.cameraMovement || 'Medium Shot, Slow Dolly In';
+  const lightPart =
+    lightingOptions.length > 0
+      ? lightingOptions.join(' & ')
+      : fields.lighting || 'Volumetric Lighting';
+  const envPart =
+    environments.length > 0
+      ? environments.join(' / ')
+      : fields.environment || 'Rainy Street';
+  const moodPart = moods.length > 0 ? moods.join(', ') : 'Emotional, Cinematic';
+
+  const segments = [
+    `[Visual Style: ${stylePart} | Mood: ${moodPart}]`,
+    fields.mainSceneDescription
+      ? `Scene Action: ${fields.mainSceneDescription.trim()}.`
+      : '',
+    fields.characterDescription
+      ? `Character: ${fields.characterDescription.trim()} (${fields.clothing || 'signature wardrobe'}, expression: ${fields.facialExpression || 'expressive'}).`
+      : '',
+    fields.characterAction
+      ? `Performance / Movement: ${fields.characterAction.trim()}.`
+      : '',
+    `Environment: ${fields.environment || envPart}.`,
+    `Camera & Lens: ${cameraPart}${fields.cameraMovement ? ` — ${fields.cameraMovement}` : ''}.`,
+    `Lighting & Color: ${lightPart}${fields.colorGrading ? `, Color Grade: ${fields.colorGrading}` : ''}.`,
+    fields.visualEffects ? `Atmospheric VFX: ${fields.visualEffects}.` : '',
+    fields.sceneTransition ? `Transition: ${fields.sceneTransition}.` : '',
+    fields.additionalInstructions ? `Director Note: ${fields.additionalInstructions}.` : '',
+    fields.negativePrompt ? `Negative Prompt (Avoid): ${fields.negativePrompt}.` : '',
+  ].filter(Boolean);
+
+  return segments.join(' ');
+}
+
+/**
+ * Generates a complete 13-field PromptStudioItem for any scene in the project.
+ */
+export function buildPromptStudioItemForScene(params: {
+  projectId: string;
+  scene: StoryboardScene;
+  directorStyle: DirectorStyle;
+  characters: CharacterProfileItem[];
+}): PromptStudioItem {
+  const { projectId, scene, directorStyle, characters } = params;
+  const styleCfg =
+    DIRECTOR_STYLE_CONFIGS[directorStyle] ||
+    DIRECTOR_STYLE_CONFIGS['Story-based music video'];
+  const arcBeat =
+    styleCfg.storyArcScenes[(scene.index - 1) % styleCfg.storyArcScenes.length];
+
+  const leadChar = characters[0];
+  const charDesc = leadChar
+    ? `${leadChar.name}${leadChar.age ? ` (${leadChar.age})` : ''} — ${leadChar.appearancePrompt}`
+    : 'Expressive lead protagonist with natural cinematic screen presence';
+  const clothing = leadChar?.wardrobeLock || 'Tailored dark trench coat with subtle rain sheen';
+  const expression =
+    leadChar?.facialExpression ||
+    (arcBeat.mood === 'Sad' || arcBeat.mood === 'Heartbroken'
+      ? 'Melancholic, introspective gaze with subtle emotional vulnerability'
+      : arcBeat.mood === 'Romantic'
+        ? 'Warm, tender eyes with soft nostalgic smile'
+        : 'Focused, emotionally resonant expression');
+
+  const visualStyles: PromptVisualStyle[] =
+    directorStyle === 'Anime music video'
+      ? ['Anime', 'Cinematic Realism']
+      : directorStyle === '3D animated music video'
+        ? ['3D Animation', 'Dreamlike Fantasy']
+        : directorStyle === 'Cinematic Bollywood style'
+          ? ['Bollywood Music Video', 'Cinematic Realism']
+          : ['Cinematic Realism', 'Music Video Aesthetic'];
+
+  const cameraControls: PromptCameraControl[] = [
+    arcBeat.cameraControl,
+    scene.cameraMovement.toLowerCase().includes('slow') ? 'Slow Motion' : 'Dolly In',
+  ];
+
+  const lightingOptions: PromptLightingOption[] = [
+    arcBeat.lighting,
+    'Volumetric Lighting',
+  ];
+
+  const environments: PromptEnvironmentOption[] = [arcBeat.environment];
+  const moods: PromptMoodOption[] = [arcBeat.mood, 'Emotional'];
+
+  const fields: PromptStudioFields = {
+    mainSceneDescription:
+      scene.narrativeArcBeat ||
+      `${arcBeat.narrativeBeat} — ${arcBeat.actionDescription}`,
+    characterDescription: charDesc,
+    characterAction: arcBeat.actionDescription,
+    facialExpression: expression,
+    clothing,
+    environment: `${arcBeat.environment} (${scene.environment || styleCfg.environmentDefault})`,
+    cameraMovement: `${scene.cameraAngle} with ${scene.cameraMovement}`,
+    lighting: `${arcBeat.lighting} — ${scene.lighting || styleCfg.lightingDefault}`,
+    colorGrading: 'Kodak Vision3 500T film emulation, rich shadow contrast, halation on highlights',
+    visualEffects: scene.symbolismVisualMotif || 'Anamorphic bokeh, atmospheric mist, subtle film grain',
+    sceneTransition: scene.transition,
+    negativePrompt: 'low resolution, blurry face, distorted hands, watermark, static text wall, jerky camera, overexposed',
+    additionalInstructions: `Synchronize motion cadence to ${scene.section} (${formatTimecode(scene.startTimeSec)}–${formatTimecode(scene.endTimeSec)}).`,
+  };
+
+  const compiledMasterPrompt = compileMasterPromptFromStudio(
+    visualStyles,
+    cameraControls,
+    lightingOptions,
+    environments,
+    moods,
+    fields
+  );
+
+  return {
+    id: `${projectId}_prompt_${scene.id}`,
+    projectId,
+    sceneId: scene.id,
+    title: `${scene.section}: ${arcBeat.narrativeBeat}`,
+    visualStyles,
+    cameraControls,
+    lightingOptions,
+    environments,
+    moods,
+    fields,
+    compiledMasterPrompt,
+    isFavorite: scene.index <= 2,
+    createdAtIso: new Date().toISOString(),
+  };
+}
 
 interface MetaphorRule {
   keywords: RegExp;
@@ -239,22 +1114,19 @@ export function analyzeLyricsForVisualSymbolism(
     .filter((l) => l.length > 0 && !/^\[.*\]$/.test(l));
 
   const safeDuration = Math.max(4, durationSec || 30);
-
-  // If user provided lyrics, use them directly; if instrumental/no lyrics, generate structural rhythmic phrases
-  const effectiveLines =
-    rawLines.length > 0
-      ? rawLines
-      : [
-          'Instrumental Intro — Rising harmonic overture & beat pulse',
-          'Main Groove — Rhythmic bassline & melodic progression',
-          'Chorus Peak — High-energy harmonic crescendo',
-          'Outro Fade — Atmospheric resonance & final cadence',
-        ];
-
-  const slotDuration = Number((safeDuration / effectiveLines.length).toFixed(2));
   const styleConfig =
     DIRECTOR_STYLE_CONFIGS[directorStyle] ||
     DIRECTOR_STYLE_CONFIGS['Story-based music video'];
+
+  // If user provided lyrics, use them directly; if instrumental/no lyrics, use story arc beats
+  const effectiveLines =
+    rawLines.length > 0
+      ? rawLines
+      : styleConfig.storyArcScenes.map(
+          (arc) => `${arc.narrativeBeat} — ${arc.actionDescription}`
+        );
+
+  const slotDuration = Number((safeDuration / effectiveLines.length).toFixed(2));
   const prefix = projectId ? `${projectId}_` : '';
 
   return effectiveLines.map((phrase, idx) => {
@@ -282,7 +1154,7 @@ export function analyzeLyricsForVisualSymbolism(
 
     const metaphoricalMeaning = matchedRule
       ? matchedRule.metaphoricalTemplate(phrase)
-      : `Symbolic representation of emotional resonance and rhythm evoked by "${phrase}".`;
+      : `Symbolic representation of emotional resonance and narrative arc evoked by "${phrase}".`;
 
     const visualElement = matchedRule
       ? matchedRule.visualElement
@@ -290,7 +1162,7 @@ export function analyzeLyricsForVisualSymbolism(
 
     const literalVisualElement = matchedRule
       ? matchedRule.literalVisualElement
-      : `Expressive performance close-up inside ${styleConfig.environmentDefault.toLowerCase()}`;
+      : `Expressive cinematic staging inside ${styleConfig.environmentDefault.toLowerCase()}`;
 
     const animationPreset: AnimationPreset = matchedRule
       ? matchedRule.animationPreset
@@ -382,15 +1254,15 @@ export function injectSymbolismIntoScenePrompt(
       ? characters
           .map(
             (c) =>
-              `[Character Lock: ${c.name} — ${c.appearancePrompt}, Wardrobe: ${c.wardrobeLock}, Hair: ${c.hairstyleLock}]`
+              `[Character Lock: ${c.name}${c.age ? ` (${c.age})` : ''} — ${c.appearancePrompt}, Expression: ${c.facialExpression || 'natural'}, Wardrobe: ${c.wardrobeLock}, Hair: ${c.hairstyleLock}]`
           )
           .join(' ')
-      : '[Character Lock: Consistent lead vocalist silhouette and wardrobe]';
+      : '[Character Lock: Consistent lead protagonist appearance and wardrobe]';
 
   const cleanBase = baseVisualPrompt.replace(/\s*\| Lyric Symbolism.*$/i, '').trim();
   const updatedVisualPrompt = `${cleanBase} | Lyric Symbolism (${mode}): ${activeMotif} (${meaningText})`;
 
-  const updatedGoogleFlowPrompt = `${directorStyle}. ${cleanBase}. Lyric Visual Metaphor (${mode}): ${activeMotif}. ${charConsistencyBlock}. Smooth 24fps anamorphic motion, high temporal coherence.`;
+  const updatedGoogleFlowPrompt = `${directorStyle}. ${cleanBase}. Visual Motif (${mode}): ${activeMotif}. ${charConsistencyBlock}. Smooth 24fps anamorphic motion, high temporal coherence.`;
 
   return {
     updatedVisualPrompt,
@@ -412,11 +1284,11 @@ export interface GeminiGeneratedSceneInput {
 }
 
 /**
- * Builds an adaptive full-length song timeline and scene-by-scene storyboard
+ * Builds an adaptive full-length song timeline and story-driven scene-by-scene storyboard
  * that covers the EXACT duration of the uploaded song (`00:00` to `durationSec`),
- * integrating live Gemini AI scenes and/or detected audio structural sections.
- * Never hardcodes 06:54 or 03:30, and initializes scenes to status 'QUEUED'
- * unless explicitly specified.
+ * combining narrative visual storytelling arcs (rainy street walk, memory flashback,
+ * close-up photograph, rainfall window, wide rooftop, emotional pullback) with
+ * Gemini AI scenes and detected audio structural sections.
  */
 export function generateFullLengthStoryboard(params: {
   projectId?: string;
@@ -444,7 +1316,6 @@ export function generateFullLengthStoryboard(params: {
     initialSceneStatus = 'QUEUED',
   } = params;
 
-  // Use the exact uploaded audio duration (minimum 4 seconds for very short audio clips)
   const totalSec = Math.max(4, Math.round(durationSec));
   const styleCfg =
     DIRECTOR_STYLE_CONFIGS[directorStyle] ||
@@ -464,7 +1335,7 @@ export function generateFullLengthStoryboard(params: {
           'Outro',
         ];
 
-  // 1. If Gemini AI returned scenes, normalize their weights to cover 100% of totalSec
+  // 1. If Gemini AI returned scenes, normalize their weights to cover 100% of totalSec and enrich with story arc beats
   if (geminiScenes && geminiScenes.length > 0) {
     const rawWeights = geminiScenes.map((g) => Math.max(2, Number(g.durationSec) || 15));
     const weightSum = rawWeights.reduce((acc, w) => acc + w, 0) || 1;
@@ -483,6 +1354,9 @@ export function generateFullLengthStoryboard(params: {
       const actualDuration = Math.max(1, endTimeSec - startTimeSec);
       cursorSec = endTimeSec;
 
+      const storyArc =
+        styleCfg.storyArcScenes[idx % styleCfg.storyArcScenes.length];
+
       const matchedSymbolism =
         symbolismItems.find(
           (s) => s.startTimeSec < endTimeSec && s.endTimeSec > startTimeSec
@@ -492,7 +1366,7 @@ export function generateFullLengthStoryboard(params: {
         gScene.section || defaultSections[idx % defaultSections.length];
       const cameraAngle =
         gScene.cameraAngle ||
-        CAMERA_ANGLE_PRESETS[idx % CAMERA_ANGLE_PRESETS.length];
+        `${storyArc.cameraControl} (${CAMERA_ANGLE_PRESETS[idx % CAMERA_ANGLE_PRESETS.length]})`;
       const cameraMovement =
         gScene.cameraMovement ||
         CAMERA_MOVEMENT_PRESETS[idx % CAMERA_MOVEMENT_PRESETS.length];
@@ -506,9 +1380,9 @@ export function generateFullLengthStoryboard(params: {
         gScene.visualPrompt ||
         `${sectionLabel} (${formatTimecode(startTimeSec)}–${formatTimecode(
           endTimeSec
-        )}): ${styleCfg.environmentDefault}, ${
-          gScene.lighting || styleCfg.lightingDefault
-        }, ${cameraAngle}, ${cameraMovement}`;
+        )}): ${storyArc.narrativeBeat} — ${storyArc.actionDescription}. Environment: ${storyArc.environment} (${styleCfg.environmentDefault}), Lighting: ${
+          gScene.lighting || `${storyArc.lighting}, ${styleCfg.lightingDefault}`
+        }, Camera: ${cameraAngle}, ${cameraMovement}`;
 
       const injected = matchedSymbolism
         ? injectSymbolismIntoScenePrompt(
@@ -521,7 +1395,7 @@ export function generateFullLengthStoryboard(params: {
         : {
             updatedVisualPrompt: baseVisualPrompt,
             updatedGoogleFlowPrompt: `${directorStyle}. ${baseVisualPrompt}`,
-            activeMotif: gScene.metaphorCue || 'Volumetric stage atmosphere',
+            activeMotif: gScene.metaphorCue || storyArc.narrativeBeat,
           };
 
       const backdropUrl =
@@ -529,28 +1403,26 @@ export function generateFullLengthStoryboard(params: {
           ? defaultBackdropUrls[idx % defaultBackdropUrls.length]
           : '';
 
-      return {
+      const builtScene: StoryboardScene = {
         id: `${projectId}_scene_${idx + 1}`,
         projectId,
         index: idx + 1,
         section: sectionLabel,
-        title:
-          gScene.title ||
-          `${sectionLabel}: ${
-            matchedSymbolism?.lyricPhrase.slice(0, 38) || 'Cinematic Sequence'
-          }`,
+        title: gScene.title || `${sectionLabel}: ${storyArc.narrativeBeat}`,
+        narrativeArcBeat: `${storyArc.narrativeBeat} — ${storyArc.actionDescription}`,
         startTimeSec,
         endTimeSec,
         durationSec: actualDuration,
         lyricExcerpt:
           matchedSymbolism?.lyricPhrase ||
-          `[${sectionLabel} musical passage]`,
+          `[${sectionLabel} — ${storyArc.narrativeBeat}]`,
+        showLyricsInScene: false,
         visualPrompt: injected.updatedVisualPrompt,
         googleFlowPrompt: injected.updatedGoogleFlowPrompt,
         cameraAngle,
         cameraMovement,
-        lighting: gScene.lighting || styleCfg.lightingDefault,
-        environment: styleCfg.environmentDefault,
+        lighting: gScene.lighting || `${storyArc.lighting} (${styleCfg.lightingDefault})`,
+        environment: `${storyArc.environment} — ${styleCfg.environmentDefault}`,
         transition: validTransition,
         characterIds: characters.map((c) => c.id),
         linkedSymbolismId: matchedSymbolism?.id,
@@ -561,18 +1433,29 @@ export function generateFullLengthStoryboard(params: {
         backdropImageUrl: backdropUrl,
         providerSource,
         brightness: 100,
-        contrast: 105,
-        saturation: 110,
-        filmGrain: 18,
+        contrast: 108,
+        saturation: 112,
+        filmGrain: 16,
+        temperature: 0,
+        exposure: 0,
+        vignette: 26,
       };
+
+      builtScene.promptStudioItem = buildPromptStudioItemForScene({
+        projectId,
+        scene: builtScene,
+        directorStyle,
+        characters,
+      });
+
+      return builtScene;
     });
   }
 
-  // 2. Dynamic Audio-Section & Lyric-Driven Storyboard Builder
+  // 2. Story-Driven Narrative & Audio-Section Storyboard Builder
   const fullBlueprint: {
     section: StoryboardScene['section'];
     weight: number;
-    defaultSuffix: string;
     cameraAngle: string;
     cameraMovement: string;
     transition: TransitionType;
@@ -580,77 +1463,68 @@ export function generateFullLengthStoryboard(params: {
     {
       section: 'Intro',
       weight: 15 / 210,
-      defaultSuffix: 'Atmospheric Establishing Overture',
       cameraAngle: '24mm Wide Anamorphic Establishing Shot',
-      cameraMovement: 'Slow crane descent through volumetric mist',
+      cameraMovement: 'Slow tracking shot along rain-slicked street',
       transition: 'Cross Dissolve',
     },
     {
       section: 'Verse 1',
       weight: 30 / 210,
-      defaultSuffix: 'Intimate Narrative Awakening',
-      cameraAngle: '50mm Medium Close-Up',
-      cameraMovement: 'Slow dolly push-in on lead vocalist',
+      cameraAngle: '50mm Golden-Hour Flashback Medium Shot',
+      cameraMovement: 'Slow-motion gimbal drift through warm sunlight',
       transition: 'Cross Dissolve',
     },
     {
       section: 'Chorus 1',
       weight: 20 / 210,
-      defaultSuffix: 'Kinetic Visual Anthem Surge',
-      cameraAngle: '35mm Low-Angle Dynamic Stage Frame',
-      cameraMovement: '360-degree orbital gimbal rotation',
+      cameraAngle: '85mm Macro-to-Close-Up Portrait',
+      cameraMovement: 'Motivated dolly push-in on photograph & expression',
       transition: 'Beat Flash Cut',
     },
     {
       section: 'Verse 2',
       weight: 30 / 210,
-      defaultSuffix: 'Dual Perspective & Memory Echo',
-      cameraAngle: '85mm Anamorphic Split-Depth Portrait',
-      cameraMovement: 'Lateral tracking parallel to rainy glass',
+      cameraAngle: '50mm Rain-Streaked Window Reflection Close-Up',
+      cameraMovement: 'Lateral tracking parallel to rainfall on glass',
       transition: 'Anamorphic Whip Pan',
     },
     {
       section: 'Chorus 2',
       weight: 25 / 210,
-      defaultSuffix: 'Synchronized Crescendo & Light Storm',
-      cameraAngle: '28mm Wide Stage & Crowd Vista',
-      cameraMovement: 'Sweeping technocrane arc synchronized to snare',
+      cameraAngle: '24mm Wide Rooftop Vista Under Storm Clouds',
+      cameraMovement: 'Sweeping aerial drone orbit synchronized to snare',
       transition: 'Beat Flash Cut',
     },
     {
       section: 'Bridge',
       weight: 30 / 210,
-      defaultSuffix: 'Surreal Metaphorical Suspension',
-      cameraAngle: '40mm Macro-to-Wide Shift Frame',
+      cameraAngle: '40mm Surreal Memory Suspension Frame',
       cameraMovement: 'Vertigo dolly-zoom time-freeze effect',
       transition: 'Dolly Zoom In',
     },
     {
       section: 'Final Chorus',
       weight: 40 / 210,
-      defaultSuffix: 'Climax Catharsis & Full Visual Symphony',
-      cameraAngle: '18mm Ultra-Wide Epic Stage & Sky',
-      cameraMovement: 'Rapid ascending drone reveal into starlit sky',
+      cameraAngle: '18mm Ultra-Wide Climax Stage & Skyline',
+      cameraMovement: 'Ascending crane reveal into volumetric cloudbreak',
       transition: 'Glitch Sync',
     },
     {
       section: 'Outro',
       weight: 20 / 210,
-      defaultSuffix: 'Lingering Resonance & Fade',
-      cameraAngle: '50mm Silhouette Long Shot',
-      cameraMovement: 'Slow pull-back fade into horizon glow',
+      cameraAngle: '50mm Emotional Silhouette Long Shot',
+      cameraMovement: 'Slow camera pullback into glowing horizon mist',
       transition: 'Fade to Black',
     },
   ];
 
-  // For shorter audio clips (< 32s), use 4 proportional sections so each clip is at least several seconds
   const activeBlueprint =
     totalSec < 32
       ? [
-          { ...fullBlueprint[0], weight: 0.2 },
-          { ...fullBlueprint[1], weight: 0.3 },
-          { ...fullBlueprint[2], weight: 0.3 },
-          { ...fullBlueprint[7], weight: 0.2 },
+          { ...fullBlueprint[0], weight: 0.22 },
+          { ...fullBlueprint[1], weight: 0.28 },
+          { ...fullBlueprint[4], weight: 0.28 },
+          { ...fullBlueprint[7], weight: 0.22 },
         ]
       : fullBlueprint;
 
@@ -658,6 +1532,8 @@ export function generateFullLengthStoryboard(params: {
   return activeBlueprint.map((slot, idx) => {
     const isLast = idx === activeBlueprint.length - 1;
     const detected = detectedSections?.[idx];
+    const storyArc =
+      styleCfg.storyArcScenes[idx % styleCfg.storyArcScenes.length];
 
     let startTimeSec = cursorSec;
     let endTimeSec: number;
@@ -682,17 +1558,7 @@ export function generateFullLengthStoryboard(params: {
         (s) => s.startTimeSec < endTimeSec && s.endTimeSec > startTimeSec
       ) || symbolismItems[idx % Math.max(1, symbolismItems.length)];
 
-    const dynamicHeadline = matchedSymbolism?.lyricPhrase
-      ? matchedSymbolism.lyricPhrase
-          .split(/\s+/)
-          .slice(0, 5)
-          .join(' ')
-          .replace(/[^\w\s'-]/g, '')
-      : slot.defaultSuffix;
-
-    const sceneTitle = matchedSymbolism?.lyricPhrase
-      ? `${sectionName}: "${dynamicHeadline}..."`
-      : `${sectionName}: ${slot.defaultSuffix}`;
+    const sceneTitle = `${sectionName}: ${storyArc.narrativeBeat}`;
 
     const energyNote = detected?.energyLevel
       ? ` [Audio Energy: ${detected.energyLevel}]`
@@ -700,11 +1566,13 @@ export function generateFullLengthStoryboard(params: {
 
     const baseVisualPrompt = `${sectionName} (${formatTimecode(
       startTimeSec
-    )}–${formatTimecode(endTimeSec)})${energyNote}: Staging "${
-      matchedSymbolism?.lyricPhrase || slot.defaultSuffix
-    }" inside ${styleCfg.environmentDefault}, ${styleCfg.lightingDefault}, ${
+    )}–${formatTimecode(endTimeSec)})${energyNote}: ${storyArc.narrativeBeat} — ${
+      storyArc.actionDescription
+    }. Environment: ${storyArc.environment} (${styleCfg.environmentDefault}), Lighting: ${
+      storyArc.lighting
+    } (${styleCfg.lightingDefault}), Camera: ${storyArc.cameraControl} / ${
       slot.cameraAngle
-    }, ${slot.cameraMovement}`;
+    }, Movement: ${slot.cameraMovement}`;
 
     const injected = matchedSymbolism
       ? injectSymbolismIntoScenePrompt(
@@ -717,7 +1585,7 @@ export function generateFullLengthStoryboard(params: {
       : {
           updatedVisualPrompt: baseVisualPrompt,
           updatedGoogleFlowPrompt: `${directorStyle}. ${baseVisualPrompt}`,
-          activeMotif: 'Volumetric stage atmosphere',
+          activeMotif: storyArc.narrativeBeat,
         };
 
     const backdropUrl =
@@ -725,23 +1593,25 @@ export function generateFullLengthStoryboard(params: {
         ? defaultBackdropUrls[idx % defaultBackdropUrls.length]
         : '';
 
-    return {
+    const builtScene: StoryboardScene = {
       id: `${projectId}_scene_${idx + 1}`,
       projectId,
       index: idx + 1,
       section: sectionName,
       title: sceneTitle,
+      narrativeArcBeat: `${storyArc.narrativeBeat} — ${storyArc.actionDescription}`,
       startTimeSec,
       endTimeSec,
       durationSec: actualDuration,
       lyricExcerpt:
-        matchedSymbolism?.lyricPhrase || `[${sectionName} instrumental passage]`,
+        matchedSymbolism?.lyricPhrase || `[${sectionName} — ${storyArc.narrativeBeat}]`,
+      showLyricsInScene: false,
       visualPrompt: injected.updatedVisualPrompt,
       googleFlowPrompt: injected.updatedGoogleFlowPrompt,
-      cameraAngle: slot.cameraAngle,
+      cameraAngle: `${storyArc.cameraControl} — ${slot.cameraAngle}`,
       cameraMovement: slot.cameraMovement,
-      lighting: styleCfg.lightingDefault,
-      environment: styleCfg.environmentDefault,
+      lighting: `${storyArc.lighting} — ${styleCfg.lightingDefault}`,
+      environment: `${storyArc.environment} (${styleCfg.environmentDefault})`,
       transition: slot.transition,
       characterIds: characters.map((c) => c.id),
       linkedSymbolismId: matchedSymbolism?.id,
@@ -752,11 +1622,71 @@ export function generateFullLengthStoryboard(params: {
       backdropImageUrl: backdropUrl,
       providerSource,
       brightness: 100,
-      contrast: 105,
-      saturation: 110,
-      filmGrain: 18,
+      contrast: 108,
+      saturation: 112,
+      filmGrain: 16,
+      temperature: 0,
+      exposure: 0,
+      vignette: 26,
     };
+
+    builtScene.promptStudioItem = buildPromptStudioItemForScene({
+      projectId,
+      scene: builtScene,
+      directorStyle,
+      characters,
+    });
+
+    return builtScene;
   });
+}
+
+/**
+ * Snaps internal scene boundaries to the nearest musical beat timestamp while keeping
+ * scene order intact and maintaining a minimum 2-second scene duration.
+ */
+export function snapScenesToMusicalBeats(
+  scenes: StoryboardScene[],
+  beatTimestampsSec: number[],
+  totalDurationSec: number
+): StoryboardScene[] {
+  if (!scenes.length || !beatTimestampsSec.length) return scenes;
+  const cloned = scenes.map((s) => ({ ...s }));
+  const safeTotal = Math.max(4, totalDurationSec);
+
+  for (let i = 0; i < cloned.length - 1; i++) {
+    const current = cloned[i];
+    const next = cloned[i + 1];
+    const targetBoundary = current.endTimeSec;
+
+    // Find closest beat to targetBoundary
+    let closestBeat = targetBoundary;
+    let minDiff = Infinity;
+    for (const beat of beatTimestampsSec) {
+      const diff = Math.abs(beat - targetBoundary);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestBeat = beat;
+      }
+    }
+
+    const minAllowed = current.startTimeSec + 2;
+    const maxAllowed = (i === cloned.length - 2 ? safeTotal : next.endTimeSec) - 2;
+    const snapped = Number(
+      Math.max(minAllowed, Math.min(maxAllowed, closestBeat)).toFixed(2)
+    );
+
+    current.endTimeSec = snapped;
+    current.durationSec = Number((current.endTimeSec - current.startTimeSec).toFixed(2));
+    next.startTimeSec = snapped;
+    next.durationSec = Number((next.endTimeSec - next.startTimeSec).toFixed(2));
+  }
+
+  const last = cloned[cloned.length - 1];
+  last.endTimeSec = safeTotal;
+  last.durationSec = Math.max(1, Number((last.endTimeSec - last.startTimeSec).toFixed(2)));
+
+  return cloned;
 }
 
 /**
@@ -978,6 +1908,8 @@ export function applyDirectorsCutEdit(
       | 'symbolismMode'
       | 'symbolismVisualMotif'
       | 'animationPreset'
+      | 'showLyricsInScene'
+      | 'narrativeArcBeat'
     >
   >,
   directorStyle: DirectorStyle = 'Story-based music video'
@@ -1010,6 +1942,10 @@ export function applyDirectorsCutEdit(
   if (patch.symbolismVisualMotif !== undefined)
     target.symbolismVisualMotif = patch.symbolismVisualMotif;
   if (patch.animationPreset !== undefined) target.animationPreset = patch.animationPreset;
+  if (patch.showLyricsInScene !== undefined)
+    target.showLyricsInScene = patch.showLyricsInScene;
+  if (patch.narrativeArcBeat !== undefined)
+    target.narrativeArcBeat = patch.narrativeArcBeat;
 
   if (patch.visualPrompt !== undefined) {
     target.visualPrompt = patch.visualPrompt;
@@ -1021,7 +1957,7 @@ export function applyDirectorsCutEdit(
   ) {
     target.visualPrompt = `${target.section} (${formatTimecode(target.startTimeSec)}–${formatTimecode(
       target.endTimeSec
-    )}): ${target.environment}, ${target.lighting}, ${target.cameraAngle}, ${
+    )}): ${target.narrativeArcBeat || target.environment}, ${target.lighting}, ${target.cameraAngle}, ${
       target.cameraMovement
     } | Transition: ${target.transition} | Lyric Symbolism (${target.symbolismMode}): ${
       target.symbolismVisualMotif

@@ -454,10 +454,10 @@ export const StoryboardWorkspace: React.FC<StoryboardWorkspaceProps> = ({
           const latestJob = projectJobs.find((j) => j.sceneId === scene.id);
           const jobStatus = latestJob?.status || scene.status;
           const isJobActive =
-            jobStatus === 'QUEUED' ||
-            jobStatus === 'PROCESSING' ||
-            jobStatus === 'pending' ||
-            jobStatus === 'processing';
+            latestJob?.status === 'QUEUED' ||
+            latestJob?.status === 'PROCESSING' ||
+            latestJob?.status === 'pending' ||
+            latestJob?.status === 'processing';
           const isJobFailed = jobStatus === 'FAILED' || jobStatus === 'failed';
 
           return (
