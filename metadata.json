@@ -1,0 +1,6 @@
+{
+  "name": "AI Music Video Studio",
+  "description": "Professional AI-powered Music-to-Video Creation Studio integrating Google AI Pro / Google Flow subscription workflows, Gemini AI Director, Veo video generation, character consistency, and multi-track timeline editing.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

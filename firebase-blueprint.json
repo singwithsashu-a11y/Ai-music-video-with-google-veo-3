@@ -1,0 +1,304 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account profile, subscription tier, and Google AI Pro / Flow connection settings",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User full name",
+          "maxLength": 100
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "Profile avatar URL",
+          "maxLength": 500
+        },
+        "plan": {
+          "type": "string",
+          "description": "Subscription tier",
+          "enum": ["free", "creator", "pro", "studio"]
+        },
+        "appCredits": {
+          "type": "number",
+          "description": "Remaining internal studio credits"
+        },
+        "flowConnected": {
+          "type": "boolean",
+          "description": "Whether Google AI Pro / Flow account mode is active"
+        },
+        "flowSubscriptionStatus": {
+          "type": "string",
+          "description": "Google AI Pro subscription status",
+          "enum": ["active_verified_user", "unverified", "disconnected"]
+        },
+        "flowCreditsAvailable": {
+          "type": "number",
+          "description": "Available monthly Google Flow video credits tracked by user"
+        },
+        "preferredProvider": {
+          "type": "string",
+          "description": "Preferred video generation provider priority",
+          "enum": ["google_flow_priority_1", "google_veo_api_priority_2", "procedural_cinema_priority_3"]
+        },
+        "apiFallbackEnabled": {
+          "type": "boolean",
+          "description": "Whether fallback to separately billed API is allowed when explicitly confirmed"
+        },
+        "separateBillingWarningAck": {
+          "type": "boolean",
+          "description": "Whether user has acknowledged separate API billing warnings"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "plan",
+        "appCredits",
+        "flowConnected",
+        "flowSubscriptionStatus",
+        "flowCreditsAvailable",
+        "preferredProvider",
+        "apiFallbackEnabled",
+        "separateBillingWarningAck",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "UserPrivateInfo": {
+      "title": "UserPrivateInfo",
+      "description": "Isolated PII record storing the user's email address",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 254
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "createdAt"]
+    },
+    "MusicProject": {
+      "title": "MusicProject",
+      "description": "Full-length AI Music Video project metadata and serialized storyboard/timeline state",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "directorStyle": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "aspectRatio": {
+          "type": "string",
+          "enum": ["16:9", "9:16", "1:1"]
+        },
+        "resolution": {
+          "type": "string",
+          "enum": ["720p", "1080p", "4K"]
+        },
+        "durationSec": {
+          "type": "number"
+        },
+        "bpm": {
+          "type": "number"
+        },
+        "musicalKey": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "mood": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "lyricsText": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "providerUsed": {
+          "type": "string",
+          "enum": ["google_flow_priority_1", "google_veo_api_priority_2", "procedural_cinema_priority_3"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "analyzing", "storyboard_ready", "generating_clips", "editing", "exported", "failed", "archived"]
+        },
+        "sceneCount": {
+          "type": "number"
+        },
+        "completedScenes": {
+          "type": "number"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "title",
+        "description",
+        "directorStyle",
+        "aspectRatio",
+        "resolution",
+        "durationSec",
+        "bpm",
+        "musicalKey",
+        "mood",
+        "lyricsText",
+        "providerUsed",
+        "status",
+        "sceneCount",
+        "completedScenes",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "CharacterProfile": {
+      "title": "CharacterProfile",
+      "description": "Consistent AI character sheet for reuse across music video scenes",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "role": {
+          "type": "string",
+          "maxLength": 60
+        },
+        "appearancePrompt": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "wardrobeLock": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "hairstyleLock": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "referenceImageUrl": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "name",
+        "role",
+        "appearancePrompt",
+        "wardrobeLock",
+        "hairstyleLock",
+        "referenceImageUrl",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted admin role membership document",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "grantedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "grantedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Public/studio profile and Google Flow subscription preferences per user"
+    },
+    "/users/{userId}/private/{infoId}": {
+      "schema": { "$ref": "#/entities/UserPrivateInfo" },
+      "description": "Isolated PII storage for user email"
+    },
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/MusicProject" },
+      "description": "Music video projects owned by users"
+    },
+    "/characters/{characterId}": {
+      "schema": { "$ref": "#/entities/CharacterProfile" },
+      "description": "Character consistency profiles owned by users"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Lookup collection for studio administrators"
+    }
+  }
+}
